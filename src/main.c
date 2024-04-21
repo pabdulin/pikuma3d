@@ -104,7 +104,7 @@ void render_color_buffer(void) {
 
 void render(void) {
     uint32_t grid_color = 0xFF808080;
-    uint32_t clear_color = 0xFFFFFF00;
+    uint32_t clear_color = 0xFF000000;
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
