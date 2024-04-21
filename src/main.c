@@ -20,8 +20,8 @@ bool initialize_window(void) {
     int display_index = 0;
     SDL_GetCurrentDisplayMode(display_index, &display_mode);
     fprintf(stdout, "Display `%d`=`%dx%d@%d`\n", display_index, display_mode.w, display_mode.h, display_mode.refresh_rate);
-    window_width = display_mode.w;
-    window_height = display_mode.h;
+    window_width = display_mode.w / 2;
+    window_height = display_mode.h / 2;
     fprintf(stdout, "Using window_width=`%d`, window_height=`%d`\n", window_width, window_height);
 
     window = SDL_CreateWindow(
@@ -92,6 +92,14 @@ void draw_grid(uint32_t color, int step) {
     }
 }
 
+void draw_rect(int left, int top, int width, int height, uint32_t color) {
+    for(int y = top; y < top + height; y++) {
+        for(int x = left; x < left + width; x++) {
+            color_buffer[(window_width * y) + x] = color;
+        }
+    }
+}
+
 void render_color_buffer(void) {
     SDL_UpdateTexture(
         color_buffer_texture,
@@ -110,6 +118,11 @@ void render(void) {
     SDL_RenderClear(renderer);
     clear_color_buffer(clear_color);
     draw_grid(grid_color, 128);
+    
+    draw_rect(0, 0, 128, 128, 0xFFcc0000);
+    draw_rect(128, 128, 128, 128, 0xFF00cc00);
+    draw_rect(256, 256, 128, 128, 0xFF0000cc);
+
     render_color_buffer();
     SDL_RenderPresent(renderer);
 }
