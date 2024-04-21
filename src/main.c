@@ -20,8 +20,8 @@ bool initialize_window(void) {
     int display_index = 0;
     SDL_GetCurrentDisplayMode(display_index, &display_mode);
     fprintf(stdout, "Display `%d`=`%dx%d@%d`\n", display_index, display_mode.w, display_mode.h, display_mode.refresh_rate);
-    window_width = display_mode.w / 4;
-    window_height = display_mode.h / 4;
+    window_width = display_mode.w;
+    window_height = display_mode.h;
     fprintf(stdout, "Using window_width=`%d`, window_height=`%d`\n", window_width, window_height);
 
     window = SDL_CreateWindow(
@@ -36,11 +36,12 @@ bool initialize_window(void) {
         fprintf(stderr, "Error creating SDL window.\n");
         return false;
     }
-    renderer = SDL_CreateRenderer(window, -1, 0);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     if(!renderer) {
         fprintf(stderr, "Error creating SDL renderer.\n");
         return false;
     }
+    //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
     return true;
 }
 
@@ -81,6 +82,16 @@ void clear_color_buffer(uint32_t color) {
     }
 }
 
+void draw_grid(uint32_t color, int step) {
+    for(int y = 0; y < window_height; y++) {
+        for(int x = 0; x < window_width; x++) {
+            if(((x + 1) % step == 0) || ((y + 1) % step == 0)) {
+                color_buffer[(window_width * y) + x] = color;
+            }
+        }
+    }
+}
+
 void render_color_buffer(void) {
     SDL_UpdateTexture(
         color_buffer_texture,
@@ -92,9 +103,13 @@ void render_color_buffer(void) {
 }
 
 void render(void) {
+    uint32_t grid_color = 0xFF808080;
+    uint32_t clear_color = 0xFFFFFF00;
+
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
-    clear_color_buffer(0xFFFFFF00);
+    clear_color_buffer(clear_color);
+    draw_grid(grid_color, 128);
     render_color_buffer();
     SDL_RenderPresent(renderer);
 }
