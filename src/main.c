@@ -8,14 +8,22 @@ SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 uint32_t* color_buffer = NULL;
 SDL_Texture* color_buffer_texture = NULL;
-int window_width = 800;
-int window_height = 600;
+int window_width = 128;
+int window_height = 128;
 
 bool initialize_window(void) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         fprintf(stderr, "Error initializing SDL.\n");
         return false;
     }
+    SDL_DisplayMode display_mode;
+    int display_index = 0;
+    SDL_GetCurrentDisplayMode(display_index, &display_mode);
+    fprintf(stdout, "Display `%d`=`%dx%d@%d`\n", display_index, display_mode.w, display_mode.h, display_mode.refresh_rate);
+    window_width = display_mode.w / 4;
+    window_height = display_mode.h / 4;
+    fprintf(stdout, "Using window_width=`%d`, window_height=`%d`\n", window_width, window_height);
+
     window = SDL_CreateWindow(
         NULL,
         SDL_WINDOWPOS_CENTERED,
