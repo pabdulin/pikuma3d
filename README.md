@@ -1,10 +1,11 @@
-# Pikuma 3D graphics course
+## Repo info
+Pikuma course [3D Computer Graphics Programming](https://pikuma.com/courses/learn-3d-computer-graphics-programming)
 
 ## Common setup for Windows
 1. Assuming you have [Git for Windows](https://git-scm.com/download/win) installed with bash and linux tools in cmd (default settings).
 2. Install [w64devkit](https://github.com/skeeto/w64devkit/releases) and put `bin` into system PATH.
 
-## Modules
+## Notes on modules
 1. Introduction
 2. Compiling our Project
    1. Get [SDL2-devel-2.30.2-mingw.zip](https://github.com/libsdl-org/SDL/releases/tag/release-2.30.2)
