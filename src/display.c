@@ -46,16 +46,17 @@ void draw_grid(uint32_t color, int step) {
     for(int y = 0; y < window_height; y++) {
         for(int x = 0; x < window_width; x++) {
             if(((x + 1) % step == 0) || ((y + 1) % step == 0)) {
-                color_buffer[(window_width * y) + x] = color;
+                draw_pixel(x, y, color);
             }
         }
     }
 }
 
 void draw_pixel(int x, int y, uint32_t color) {
-    if(x < window_width && y < window_height) {
+    if(x >= 0 && x < window_width && y >= 0 && y < window_height) {
         color_buffer[(window_width * y) + x] = color;
     } else {
+        fprintf(stderr, "Attempt to draw at x=`%d`, y=`%d`\n", x, y);
         SDL_assert(false);
     }
 }
@@ -63,7 +64,7 @@ void draw_pixel(int x, int y, uint32_t color) {
 void draw_rect(int left, int top, int width, int height, uint32_t color) {
     for(int y = top; y < top + height; y++) {
         for(int x = left; x < left + width; x++) {
-            color_buffer[(window_width * y) + x] = color;
+            draw_pixel(x, y, color);
         }
     }
 }
