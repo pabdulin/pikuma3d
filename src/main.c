@@ -43,6 +43,8 @@ void render(void) {
     draw_rect(0, 0, 128, 128, 0xFFcc0000);
     draw_rect(128, 128, 128, 128, 0xFF00cc00);
     draw_rect(256, 256, 128, 128, 0xFF0000cc);
+    
+    draw_pixel(20, 20, 0xFFffffff);
 
     render_color_buffer();
     SDL_RenderPresent(renderer);
