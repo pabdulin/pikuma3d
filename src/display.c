@@ -56,8 +56,8 @@ void draw_pixel(int x, int y, uint32_t color) {
     if(x >= 0 && x < window_width && y >= 0 && y < window_height) {
         color_buffer[(window_width * y) + x] = color;
     } else {
-        fprintf(stderr, "Attempt to draw at x=`%d`, y=`%d`\n", x, y);
-        SDL_assert(false);
+        // fprintf(stderr, "Attempt to draw at x=`%d`, y=`%d`\n", x, y);
+        // SDL_assert(false);
     }
 }
 
