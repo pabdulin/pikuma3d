@@ -93,6 +93,16 @@ void render(void) {
         {
             draw_rect(t.points[j].x, t.points[j].y, 8, 8, 0xFFffff00);
         }
+        //uint32_t color1 = i % 2 == 0 ? 0xFFff00ff : 0xFF0000ff;
+        uint32_t color1 = 0xFFffffff;
+        draw_triangle(
+            t.points[0].x,
+            t.points[0].y,
+            t.points[1].x,
+            t.points[1].y,
+            t.points[2].x,
+            t.points[2].y,
+            color1);
     }
 
     render_color_buffer();
