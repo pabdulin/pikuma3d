@@ -56,18 +56,15 @@ void draw_grid(uint32_t color, int step) {
 void draw_line(int x0, int y0, int x1, int y1, uint32_t color) {
     int delta_x = x1 - x0;
     int delta_y = y1 - y0;
-
     int abs_dx = abs(delta_x);
     int abs_dy = abs(delta_y);
-    int side_lenght = abs_dx >= abs_dy ? abs_dx : abs_dy;
-
-    float x_inc = (float)delta_x / (float)side_lenght;
-    float y_inc = (float)delta_y / (float)side_lenght;
+    int max_side_lenght = abs_dx >= abs_dy ? abs_dx : abs_dy;
+    float x_inc = (float)delta_x / (float)max_side_lenght;
+    float y_inc = (float)delta_y / (float)max_side_lenght;
 
     float current_x = x0;
     float current_y = y0;
-
-    for(int i = 0; i <= side_lenght; i++) {
+    for(int i = 0; i <= max_side_lenght; i++) {
         draw_pixel((int)roundf(current_x), (int)roundf(current_y), color);
         current_x += x_inc;
         current_y += y_inc;

@@ -2,8 +2,9 @@
 #include "vector.h"
 #include "mesh.h"
 #include "triangle.h"
+#include "array.h"
 
-triangle_t triangles_to_render[N_MESH_FACES];
+triangle_t* triangles_to_render = NULL;
 
 vec3_t camera_position = { .x = 0, .y = 0, .z = -5 };
 vec3_t cube_rotation = { .x = 0, .y = 0, .z = 0 };
@@ -53,6 +54,8 @@ void update(void) {
     }
     previous_frame_time = SDL_GetTicks();
 
+    triangles_to_render = NULL;
+
     cube_rotation.x += 0.01f;
     cube_rotation.y += 0.01f;
     cube_rotation.z += 0.01f;
@@ -63,6 +66,7 @@ void update(void) {
         face_vertices[0] = mesh_vertices[mesh_face.a - 1];
         face_vertices[1] = mesh_vertices[mesh_face.b - 1];
         face_vertices[2] = mesh_vertices[mesh_face.c - 1];
+        triangle_t projected_triangle;
         for(int j = 0; j < 3; j++)
         {
             vec3_t transformed_vertex = face_vertices[j];
@@ -75,8 +79,11 @@ void update(void) {
             vec2_t projected_point = project(transformed_vertex);
             projected_point.x += (window_width / 2);
             projected_point.y += (window_height / 2);
-            triangles_to_render[i].points[j] = projected_point;
+            
+            projected_triangle.points[j] = projected_point;
         }
+        // triangles_to_render[i] = projected_triangle;
+        array_push(triangles_to_render, projected_triangle);
     }
 }
 
@@ -87,13 +94,14 @@ void render(void) {
     clear_color_buffer(clear_color);
     draw_grid(grid_color, 128);
 
-    for(int i = 0; i < N_MESH_FACES; i++) {
+    int num_triangles = array_length(triangles_to_render);
+    for(int i = 0; i < num_triangles; i++) {
         triangle_t t = triangles_to_render[i];
         for(int j = 0; j < 3; j++)
         {
             draw_rect(t.points[j].x, t.points[j].y, 8, 8, 0xFFffff00);
         }
-        //uint32_t color1 = i % 2 == 0 ? 0xFFff00ff : 0xFF0000ff;
+
         uint32_t color1 = 0xFFffffff;
         draw_triangle(
             t.points[0].x,
@@ -104,6 +112,9 @@ void render(void) {
             t.points[2].y,
             color1);
     }
+
+    // TODO: remove gameloop alloc/free
+    array_free(triangles_to_render);
 
     render_color_buffer();
     SDL_RenderPresent(renderer);
