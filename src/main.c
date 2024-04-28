@@ -21,7 +21,8 @@ void setup(void) {
         window_width,
         window_height);
     
-    load_cube_mesh_data();
+    //load_cube_mesh_data();
+    load_obj_file_data("./assets/cube.obj");
 }
 
 void process_input(void) {
@@ -83,7 +84,6 @@ void update(void) {
             
             projected_triangle.points[j] = projected_point;
         }
-        // triangles_to_render[i] = projected_triangle;
         array_push(triangles_to_render, projected_triangle);
     }
 }
@@ -121,6 +121,12 @@ void render(void) {
     SDL_RenderPresent(renderer);
 }
 
+void free_resources(void) {
+    free(color_buffer);
+    array_free(mesh.faces);
+    array_free(mesh.vertices);
+}
+
 int main(int argc, char *argv[]) {
     is_running = initialize_window();
 
@@ -133,6 +139,7 @@ int main(int argc, char *argv[]) {
     }
     
     destroy_window();
+    free_resources();
 
     return 0;
 }
