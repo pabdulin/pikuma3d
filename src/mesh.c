@@ -106,3 +106,29 @@ void load_obj_file_data(char* filename) {
 
     fclose(file);
 }
+
+void load_obj_file_data_reference(char* filename) {
+    FILE* file;
+    file = fopen(filename, "r");
+    char line[1024];
+    while(fgets(line, 1024, file)) {
+        // vertex
+        if(strncmp(line, "v ", 2) == 0) {
+            vec3_t vertex;
+            sscanf(line, "v %f %f %f", &vertex.x, &vertex.y, &vertex.z);
+            array_push(mesh.vertices, vertex);
+        }
+
+        // faces
+        if(strncmp(line, "f ", 2) == 0) {
+            int t;
+            face_t face;
+            sscanf(line, "f %d/%d/%d %d/%d/%d %d/%d/%d",
+                &face.a, &t, &t, 
+                &face.b, &t, &t, 
+                &face.c, &t, &t);
+            array_push(mesh.faces, face);
+        }
+    }
+    fclose(file);
+}
