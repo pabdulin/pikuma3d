@@ -60,8 +60,6 @@ void load_obj_file_data(char* filename) {
     char buf1[BUF_SIZE] = {0};
     char buf_copy[BUF_SIZE] = {0};
     
-    int vIndex = 0;
-    int fIndex = 0;
     FILE* file = fopen(filename, "rt");
     while(fgets(buf1, BUF_SIZE - 1, file)) {
         char* tok;
@@ -86,14 +84,14 @@ void load_obj_file_data(char* filename) {
                 printf("Found face: %s", buf_copy); // OK
                 
                 int  vIndex1 = atoi(strtok(NULL, "/"));
-                int vtIndex1 = atoi(strtok(NULL, "/"));
-                int vnIndex1 = atoi(strtok(NULL, " "));
+                strtok(NULL, "/");
+                strtok(NULL, " ");
                 int  vIndex2 = atoi(strtok(NULL, "/"));
-                int vtIndex2 = atoi(strtok(NULL, "/"));
-                int vnIndex2 = atoi(strtok(NULL, " "));
+                strtok(NULL, "/");
+                strtok(NULL, " ");
                 int  vIndex3 = atoi(strtok(NULL, "/"));
-                int vtIndex3 = atoi(strtok(NULL, "/"));
-                int vnIndex3 = atoi(strtok(NULL, " "));
+                strtok(NULL, "/");
+                strtok(NULL, " ");
 
                 printf("Parsed face: %d, %d, %d\n", vIndex1, vIndex2, vIndex3); // OK
 

@@ -22,6 +22,7 @@ void setup(void) {
         window_height);
     
     load_obj_file_data_reference("./assets/cube.obj");
+    // load_obj_file_data_reference("./assets/f22.obj");
 }
 
 void process_input(void) {
@@ -92,6 +93,10 @@ void update(void) {
         vec3_t vector_ac = vec3_sub(vector_c, vector_a);
         // N - normal
         vec3_t normal = vec3_cross(vector_ab, vector_ac);
+
+        // Normalize the face normal vector
+        vec3_normalize(&normal);
+
         // calculate ray to the camera
         vec3_t camera_ray = vec3_sub(camera_position, vector_a);
         // check our dot product (vector aligment)
