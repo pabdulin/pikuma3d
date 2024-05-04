@@ -124,29 +124,37 @@ void render(void) {
     uint32_t grid_color = 0xFF808080;
     uint32_t clear_color = 0xFF000000;
     uint32_t color_white = 0xFFffffff;
+    uint32_t color_green = 0xFF00ff00;
+    uint32_t color_black = 0xFF000000;
 
     clear_color_buffer(clear_color);
     draw_grid(grid_color, 100);
 
-    // int num_triangles = array_length(triangles_to_render);
-    // for(int i = 0; i < num_triangles; i++) {
-    //     triangle_t t = triangles_to_render[i];
-    //     for(int j = 0; j < 3; j++)
-    //     {
-    //         draw_rect(t.points[j].x, t.points[j].y, 8, 8, 0xFFffff00);
-    //     }
+    int num_triangles = array_length(triangles_to_render);
+    for(int i = 0; i < num_triangles; i++) {
+        triangle_t t = triangles_to_render[i];
+        // for(int j = 0; j < 3; j++)
+        // {
+        //     draw_rect(t.points[j].x, t.points[j].y, 8, 8, 0xFFffff00);
+        // }
 
-    //     draw_triangle(
-    //         t.points[0].x,
-    //         t.points[0].y,
-    //         t.points[1].x,
-    //         t.points[1].y,
-    //         t.points[2].x,
-    //         t.points[2].y,
-    //         color_white);
-    // }
-
-    draw_filled_triangle(300, 100, 50, 400, 500, 700, color_white);
+        draw_filled_triangle(
+            t.points[0].x,
+            t.points[0].y,
+            t.points[1].x,
+            t.points[1].y,
+            t.points[2].x,
+            t.points[2].y,
+            color_white);
+        draw_triangle(
+            t.points[0].x,
+            t.points[0].y,
+            t.points[1].x,
+            t.points[1].y,
+            t.points[2].x,
+            t.points[2].y,
+            color_black);
+    }
 
     // TODO: remove gameloop alloc/free
     array_free(triangles_to_render);
