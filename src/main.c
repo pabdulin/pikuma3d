@@ -27,7 +27,8 @@ void setup(void) {
         window_width,
         window_height);
     
-    load_obj_file_data_reference("./assets/cube.obj");
+    load_cube_mesh_data();
+    // load_obj_file_data_reference("./assets/cube.obj");
     // load_obj_file_data_reference("./assets/f22.obj");
 }
 
@@ -128,6 +129,7 @@ void update(void) {
         }
         
         triangle_t projected_triangle;
+        projected_triangle.color = mesh_face.color;
         for(int j = 0; j < 3; j++) {
             // projecting to 2D
             vec2_t projected_point = project(transformed_vertices[j]);
@@ -145,6 +147,7 @@ void render(void) {
     uint32_t clear_color = 0xFF000000;
     uint32_t color_white = 0xFFffffff;
     uint32_t color_gray = 0xFF555555;
+    uint32_t color_dark_gray = 0xFF303030;
     uint32_t color_green = 0xFF00ff00;
     uint32_t color_black = 0xFF000000;
 
@@ -163,7 +166,7 @@ void render(void) {
                 t.points[1].y,
                 t.points[2].x,
                 t.points[2].y,
-                color_white);
+                t.color);
         }
 
         if (render_method == RENDER_WIRE || render_method == RENDER_WIRE_VERTEX || render_method == RENDER_FILL_TRIANGLE_WIRE) {
@@ -174,7 +177,7 @@ void render(void) {
                 t.points[1].y,
                 t.points[2].x,
                 t.points[2].y,
-                color_gray);
+                color_dark_gray);
         }
 
         if (render_method == RENDER_WIRE_VERTEX) {
