@@ -12,7 +12,13 @@ float fov_factor = 640;
 bool is_running = false;
 int previous_frame_time = 0;
 
+extern cull_method_t cull_method;
+extern render_method_t render_method;
+
 void setup(void) {
+    render_method = RENDER_WIRE;
+    cull_method = CULL_BACKFACE;
+
     color_buffer = (uint32_t*) malloc(sizeof(uint32_t) * window_width * window_height);
     color_buffer_texture = SDL_CreateTexture(
         renderer,
@@ -35,6 +41,18 @@ void process_input(void) {
             case SDL_KEYDOWN:
                 if (event.key.keysym.sym == SDLK_ESCAPE)
                     is_running = false;
+                if (event.key.keysym.sym == SDLK_1)
+                    render_method = RENDER_WIRE_VERTEX;
+                if (event.key.keysym.sym == SDLK_2)
+                    render_method = RENDER_WIRE;
+                if (event.key.keysym.sym == SDLK_3)
+                    render_method = RENDER_FILL_TRIANGLE;
+                if (event.key.keysym.sym == SDLK_4)
+                    render_method = RENDER_FILL_TRIANGLE_WIRE;
+                if (event.key.keysym.sym == SDLK_c)
+                    cull_method = CULL_BACKFACE;
+                if (event.key.keysym.sym == SDLK_d)
+                    cull_method = CULL_NONE;
                 break;
         }
     }
@@ -82,29 +100,31 @@ void update(void) {
             transformed_vertices[j] = transformed_vertex;
         }
 
-        // check backface culling
-        vec3_t vector_a = transformed_vertices[0];
-        vec3_t vector_b = transformed_vertices[1];
-        vec3_t vector_c = transformed_vertices[2];
+        if(cull_method == CULL_BACKFACE) {
+            // check backface culling
+            vec3_t vector_a = transformed_vertices[0];
+            vec3_t vector_b = transformed_vertices[1];
+            vec3_t vector_c = transformed_vertices[2];
 
-        // B-A
-        vec3_t vector_ab = vec3_sub(vector_b, vector_a);
-        // C-A
-        vec3_t vector_ac = vec3_sub(vector_c, vector_a);
-        // N - normal
-        vec3_t normal = vec3_cross(vector_ab, vector_ac);
+            // B-A
+            vec3_t vector_ab = vec3_sub(vector_b, vector_a);
+            // C-A
+            vec3_t vector_ac = vec3_sub(vector_c, vector_a);
+            // N - normal
+            vec3_t normal = vec3_cross(vector_ab, vector_ac);
 
-        // Normalize the face normal vector
-        vec3_normalize(&normal);
+            // Normalize the face normal vector
+            vec3_normalize(&normal);
 
-        // calculate ray to the camera
-        vec3_t camera_ray = vec3_sub(camera_position, vector_a);
-        // check our dot product (vector aligment)
-        float dot = vec3_dot(normal, camera_ray);
+            // calculate ray to the camera
+            vec3_t camera_ray = vec3_sub(camera_position, vector_a);
+            // check our dot product (vector aligment)
+            float dot = vec3_dot(normal, camera_ray);
 
-        if (dot < 0) {
-            // cull faces away from us
-            continue;
+            if (dot < 0) {
+                // cull faces away from us
+                continue;
+            }
         }
         
         triangle_t projected_triangle;
@@ -124,6 +144,7 @@ void render(void) {
     uint32_t grid_color = 0xFF808080;
     uint32_t clear_color = 0xFF000000;
     uint32_t color_white = 0xFFffffff;
+    uint32_t color_gray = 0xFF555555;
     uint32_t color_green = 0xFF00ff00;
     uint32_t color_black = 0xFF000000;
 
@@ -133,27 +154,34 @@ void render(void) {
     int num_triangles = array_length(triangles_to_render);
     for(int i = 0; i < num_triangles; i++) {
         triangle_t t = triangles_to_render[i];
-        // for(int j = 0; j < 3; j++)
-        // {
-        //     draw_rect(t.points[j].x, t.points[j].y, 8, 8, 0xFFffff00);
-        // }
 
-        draw_filled_triangle(
-            t.points[0].x,
-            t.points[0].y,
-            t.points[1].x,
-            t.points[1].y,
-            t.points[2].x,
-            t.points[2].y,
-            color_white);
-        draw_triangle(
-            t.points[0].x,
-            t.points[0].y,
-            t.points[1].x,
-            t.points[1].y,
-            t.points[2].x,
-            t.points[2].y,
-            color_black);
+        if (render_method == RENDER_FILL_TRIANGLE || render_method == RENDER_FILL_TRIANGLE_WIRE) {
+            draw_filled_triangle(
+                t.points[0].x,
+                t.points[0].y,
+                t.points[1].x,
+                t.points[1].y,
+                t.points[2].x,
+                t.points[2].y,
+                color_white);
+        }
+
+        if (render_method == RENDER_WIRE || render_method == RENDER_WIRE_VERTEX || render_method == RENDER_FILL_TRIANGLE_WIRE) {
+            draw_triangle(
+                t.points[0].x,
+                t.points[0].y,
+                t.points[1].x,
+                t.points[1].y,
+                t.points[2].x,
+                t.points[2].y,
+                color_gray);
+        }
+
+        if (render_method == RENDER_WIRE_VERTEX) {
+            draw_rect(t.points[0].x - 3, t.points[0].y - 3, 6, 6, color_green);
+            draw_rect(t.points[1].x - 3, t.points[1].y - 3, 6, 6, color_green);
+            draw_rect(t.points[2].x - 3, t.points[2].y - 3, 6, 6, color_green);
+        }
     }
 
     // TODO: remove gameloop alloc/free
