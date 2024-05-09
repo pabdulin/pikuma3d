@@ -130,16 +130,39 @@ void update(void) {
         
         triangle_t projected_triangle;
         projected_triangle.color = mesh_face.color;
-        for(int j = 0; j < 3; j++) {
+        int vertex_count = 3;
+        float total_z = 0;
+        for(int j = 0; j < vertex_count; j++) {
             // projecting to 2D
             vec2_t projected_point = project(transformed_vertices[j]);
             projected_point.x += (window_width / 2);
             projected_point.y += (window_height / 2);
             
             projected_triangle.points[j] = projected_point;
+            total_z += transformed_vertices[j].z;
         }
+        projected_triangle.avg_depth = total_z / (float)vertex_count;
+
         array_push(triangles_to_render, projected_triangle);
     }
+
+    // TODO: sort the faces by avg_depth from max to min
+    int num_tri = array_length(triangles_to_render);
+    bool exchange;
+    // bubble sort
+    do {
+        exchange = false;
+        for(int i = 0; i < (num_tri - 1); i++) {
+            triangle_t* t1 = &triangles_to_render[i];
+            triangle_t* t2 = &triangles_to_render[i + 1];
+            if (t1->avg_depth < t2->avg_depth) {
+                triangle_t temp = *t1;
+                *t1 = *t2;
+                *t2 = temp;
+                exchange = true;
+            }
+        }
+    } while(exchange);
 }
 
 void render(void) {
