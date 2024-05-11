@@ -149,20 +149,16 @@ void update(void) {
     // TODO: sort the faces by avg_depth from max to min
     int num_tri = array_length(triangles_to_render);
     bool exchange;
-    // bubble sort
-    do {
-        exchange = false;
-        for(int i = 0; i < (num_tri - 1); i++) {
-            triangle_t* t1 = &triangles_to_render[i];
-            triangle_t* t2 = &triangles_to_render[i + 1];
-            if (t1->avg_depth < t2->avg_depth) {
-                triangle_t temp = *t1;
-                *t1 = *t2;
-                *t2 = temp;
-                exchange = true;
+    // bubble sort (reference)
+    for (int i = 0; i < num_tri; i++) {
+        for (int j = i; j < num_tri; j++) {
+            if (triangles_to_render[i].avg_depth < triangles_to_render[j].avg_depth) {
+                triangle_t temp = triangles_to_render[i];
+                triangles_to_render[i] = triangles_to_render[j];
+                triangles_to_render[j] = temp;
             }
         }
-    } while(exchange);
+    }
 }
 
 void render(void) {
