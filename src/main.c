@@ -151,7 +151,7 @@ void update(void) {
     bool exchange;
     // bubble sort (reference)
     for (int i = 0; i < num_tri; i++) {
-        for (int j = i; j < num_tri; j++) {
+        for (int j = i + 1; j < num_tri; j++) {
             if (triangles_to_render[i].avg_depth < triangles_to_render[j].avg_depth) {
                 triangle_t temp = triangles_to_render[i];
                 triangles_to_render[i] = triangles_to_render[j];
